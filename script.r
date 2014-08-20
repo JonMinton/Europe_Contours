@@ -82,22 +82,82 @@ rates_eu_all <- mutate(counts_eu_all, death_rate=death_count/population_count)
 ##################################################################################################
 # FIGURES
 
+# Comments from Danny
+
+# 
+# However, more important than any of this the axis of the contour maps need to 
+# be labelled on the actual diagrams and 
+
+# 1) If the Diagram can me labelled “Probability of mortality 
+# in an given year by sex and single year of age, enumerated Europe, 1751-2010” 
+# that would make it much clearer. By stating ‘enumerated’ you make it clear it 
+# is not all of Europe. You could add a note below the diagram saying the 
+# definition of Europe expands geographically over the period. [DONE]
+
+# 2) Y scale needs to be labelled “single year of age” with text rotated by 90 degrees, 
+# [DONE]
+
+
+# 3) X scale needs to be labelled “single year in which population and mortality was 
+# enumerated” or something like that. 
+
+# 4) And the scale needs to be very clearly labbled, maybe in text rotated by 90 degrees 
+# say “probability of death within the year (1=100%=certain death).” 
+
+# 5) the text which says female and male needs to be larger. 
+
+
 # Figure 1: Contour plot
-lattice.options(default.theme = standard.theme(color = FALSE))
-trellis.device(color = FALSE)
-tiff(
-  "figures/fig_01__contour_all_europe.tiff",  
-  height=1000, width=2000
+#lattice.options(default.theme = standard.theme(color = FALSE))
+
+
+trellis.device(
+  tiff(
+    "figures/fig_01__contour_all_europe.tiff",  
+    height=1000, width=2000
+  ),
+  color = FALSE
 )
-trellis.device(color = FALSE)
-contourplot(
+g1 <- contourplot(
   death_rate ~ year * age | sex, 
   data=subset(rates_eu_all, subset=sex!="total" & age <=80), 
   region=T, 
 #  col.regions=rev(heat.colors(200)), 
   col.regions=rev(gray(0:199/199)),
   cuts=50, 
+  par.strip.text=list(cex=1.2, fontface="bold"),
+  ylab="single age of death",
+  xlab="single year in which population and death counts were enumerated",
+  cex=1.4,
+
   main=NULL)
+print(g1)
+
+dev.off()
+
+
+
+trellis.device(
+  device=tiff(
+    "figures/fig_01b__contour_all_europe_log.tiff",  
+    height=1000, width=2000
+    ),
+  color = FALSE)
+g1 <- contourplot(
+  log(death_rate) ~ year * age | sex, 
+  data=subset(rates_eu_all, subset=sex!="total" & age <=80), 
+  region=T, 
+  #  col.regions=rev(heat.colors(200)), 
+  col.regions=rev(gray(0:199/199)),
+  cuts=50, 
+  par.strip.text=list(cex=1.2, fontface="bold"),
+  ylab="single age of death",
+  xlab="single year in which population and death counts were enumerated",
+  cex=1.4,
+  
+  main=NULL)
+print(g1)
+
 dev.off()
 
 
@@ -110,30 +170,29 @@ dev.off()
 
 
 
-
-
-
-
-
-# Figure 2: Changes in population and number of countries in Europe in HMD over time
-
-# Figure 2a) 
-# Number of countries for which data are available
-#tiff("figures/n_countries.tiff", width=3, height=3, units="cm", res=300)
-g1 <- ggplot(data=counts_summaries) + aes(x=year, y=n_countries) + geom_bar(stat="identity", width=1)
-g2 <- g1 + labs(y="Number of European countries in HMD", x="Year")
-print(g2)
-#dev.off()
-
-
-
-# Figure 2b)
-# Total population size in Billions
-g1 <- ggplot(data=counts_summaries) +aes(x=year, y=population_count/1000000000) + geom_area()
-g2 <- g1 + labs(y="Population (Billion)", x="Year")
-print(g2)
-
-
+# 
+# 
+# 
+# 
+# # Figure 2: Changes in population and number of countries in Europe in HMD over time
+# 
+# # Figure 2a) 
+# # Number of countries for which data are available
+# #tiff("figures/n_countries.tiff", width=3, height=3, units="cm", res=300)
+# g1 <- ggplot(data=counts_summaries) + aes(x=year, y=n_countries) + geom_bar(stat="identity", width=1)
+# g2 <- g1 + labs(y="Number of European countries in HMD", x="Year")
+# print(g2)
+# #dev.off()
+# 
+# 
+# 
+# # Figure 2b)
+# # Total population size in Billions
+# g1 <- ggplot(data=counts_summaries) +aes(x=year, y=population_count/1000000000) + geom_area()
+# g2 <- g1 + labs(y="Population (Billion)", x="Year")
+# print(g2)
+# 
+# 
 
 
 
