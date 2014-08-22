@@ -110,7 +110,7 @@ rates_eu_all <- mutate(counts_eu_all, death_rate=death_count/population_count)
 # Figure 1: Contour plot
 #lattice.options(default.theme = standard.theme(color = FALSE))
 
-
+# MONOCHROME VERSION OF GRAPH, FOR PRINT
 trellis.device(
   tiff(
     "figures/fig_01__contour_all_europe.tiff",  
@@ -134,6 +134,34 @@ g1 <- contourplot(
 print(g1)
 
 dev.off()
+
+
+# COLOUR VERSION OF GRAPH, FOR ONLINE VERSION OF PAPER
+trellis.device(
+  tiff(
+    "figures/fig_01COLOUR__contour_all_europe.tiff",  
+    height=1000, width=2000
+  ),
+  color = TRUE
+)
+g1 <- contourplot(
+  death_rate ~ year * age | sex, 
+  data=subset(rates_eu_all, subset=sex!="total" & age <=80), 
+  region=T, 
+  col.regions=rev(heat.colors(200)), 
+#  col.regions=rev(gray(0:199/199)),
+  cuts=50, 
+  par.strip.text=list(cex=1.2, fontface="bold"),
+  ylab="single age of death",
+  xlab="single year in which population and death counts were enumerated",
+  cex=1.4,
+  
+  main=NULL)
+print(g1)
+
+dev.off()
+
+
 
 
 
